@@ -12,12 +12,15 @@ With these exceptions:
 
 1. my webpack.config.js has these entries as I believe angular2 has been renamed:
 
+    ```javascript
     '@angular/core',
     '@angular/router',
     '@angular/common',
     '@angular/compiler',
     '@angular/platform-browser',
     '@angular/platform-browser-dynamic'
+    ```
+
 
 2. angularCLI uses 'main' as it's file, so electron's main file is called `electron_main.js`
 
@@ -35,10 +38,12 @@ Current errors:
 
 These:
 
+    
     electron .
     electron ./electron_build
     electron ./src
     electron ./src/app
+    
 
 produce this error block:
 

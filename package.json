@@ -9,7 +9,10 @@
     "lint": "tslint \"src/**/*.ts\"",
     "format": "clang-format -i -style=file --glob=src/**/*.ts",
     "pree2e": "webdriver-manager update",
-    "e2e": "protractor"
+    "e2e": "protractor",
+    "build": "webpack --progress --profile --colors --display-error-details --display-cached",
+    "watch": "webpack --watch --progress --profile --colors --display-error-details --display-cached",
+    "electron": "electron src/app"
   },
   "private": true,
   "dependencies": {
@@ -39,6 +42,9 @@
     "ts-node": "^0.5.5",
     "tslint": "^3.6.0",
     "typescript": "^1.8.10",
-    "typings": "^0.8.1"
+    "typings": "^0.8.1",
+    "ts-loader": "^0.8.2",
+    "webpack": "1.13.1",
+    "webpack-dev-server": "1.14.1"
   }
 }

@@ -48,7 +48,6 @@ produce this error block:
 
     Error: Cannot find module '/home/jeff/dev/ang_proj/electronAngularBoilerplate'
 
-
 Running `npm run electron` produces this error:
 
 

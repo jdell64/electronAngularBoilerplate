@@ -23,15 +23,27 @@
 <body>
   <electron-angular-boilerplate-app>Loading...</electron-angular-boilerplate-app>
 
+  <!--will give errors in electron... oh well-->
   <script src="vendor/es6-shim/es6-shim.js"></script>
   <script src="vendor/reflect-metadata/Reflect.js"></script>
   <script src="vendor/systemjs/dist/system.src.js"></script>
   <script src="vendor/zone.js/dist/zone.js"></script>
 
   <script>
-    System.import('system-config.js').then(function () {
-      System.import('main');
-    }).catch(console.error.bind(console));
+    // if require is defined, we are on node / electron:
+    if (!(typeof(require) == "undefined")){
+      require('./vendor/es6-shim/es6-shim.js');
+      require("./vendor/reflect-metadata/Reflect.js");
+      require("./vendor/systemjs/dist/system.src.js");
+      require("./vendor/zone.js/dist/zone.js");
+      require("./system-config.js");
+      require("./main.js");
+    } else {
+      System.import('system-config.js').then(function () {
+        System.import('main');
+      }).catch(console.error.bind(console));      
+    }
+  
   </script>
 </body>
 </html>

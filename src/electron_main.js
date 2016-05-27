@@ -1,30 +1,23 @@
-// app/main.js
+// main/index.js
 
-var app = require('main'); 
+'use strict';  
+const electron = require('electron'),  
+  app = electron.app,
+  BrowserWindow = electron.BrowserWindow;  
 
-// browser-window creates a native window
-var BrowserWindow = require('browser-window');
 var mainWindow = null;
 
-app.on('window-all-closed', function () {
+app.on('window-all-closed', function() {  
   if (process.platform != 'darwin') {
     app.quit();
   }
 });
 
-app.on('ready', function () {
-
-  // Initialize the window to our specified dimensions
-  mainWindow = new BrowserWindow({ width: 1200, height: 900 });
-
-  // Tell Electron where to load the entry point from
+app.on('ready', function() {  
+  mainWindow = new BrowserWindow({width: 800, height: 600});
   mainWindow.loadURL('file://' + __dirname + '/index.html');
-
-  // Clear out the main window when the app is closed
-  mainWindow.on('closed', function () {
-
+  mainWindow.webContents.openDevTools();
+  mainWindow.on('closed', function() {
     mainWindow = null;
-
   });
-
 });

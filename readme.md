@@ -1,86 +1,76 @@
-This repo is broken at the moment.
+
+
+## General Info
 
 I started with a new angular CLI project: 
 
     ng new electronAngularBoilerplate
 
-Then I tried to follow the directions at this blog post:
+Then I added an `electron_main.js` file to bootstrap my electron application. This file is located in `./src` 
 
-    https://auth0.com/blog/2015/12/15/create-a-desktop-app-with-angular-2-and-electron/
-    
-With these exceptions:
+The `./src/index.html` file had some changes to work with both electron and angular2 (see "Current Errors" below).
 
-1. my webpack.config.js has these entries as I believe angular2 has been renamed:
+I also renamed the ElectronAngularBoilerplateApp to PrimaryApp and PrimaryComponent. Reason: it's shorter and more descriptive.
 
-    '@angular/core',
-    '@angular/router',
-    '@angular/common',
-    '@angular/compiler',
-    '@angular/platform-browser',
-    '@angular/platform-browser-dynamic'
-
-2. angularCLI uses 'main' as it's file, so electron's main file is called `electron_main.js`
-
-3. In wepback.config.js, I made the build directory be `electron_build` to avoid confusion.
-
-Note: According to the tutorial, electron and angular need seperate package.json files. the one in the project root is my angular one, the electron package.json is under `./src`
+_Note: Electron and angular2 need seperate package.json files. The one in the project root is my angular one, The electron package.json is under `./src`_
 
 Currently working:
 
-`ng serve` works fine 
-`npm run watch` works fine (see scripts or the tutorial for the webpack command)
+- `ng serve` : this serves up the web app into the `./dist` folder  
+- `npm run electron` : this serves up the electron app the `./dist` folder
+
+## electron live-reloading 
+
+This doesn't work great because electron is being served out of `./dist` and that is the transpiled code.
+
+You can simulate a live reload by building the source while electron is running. In one shell, run:
+
+    npm run electron
+    
+and in another, any time you make a change, run 
+
+    ng build
+    
+I've had it freeze my app for a few seconds, so it's not as good as a true live-reload.
+
+TODO: set up a watcher. everytime my src directory changes, run ng build. 
+
+## Current Errors:
+
+- The webapp currently runs without any errors.
+- The electron app has issues with these lines:
 
 
-Current errors:
-
-These:
-
-    electron .
-    electron ./electron_build
-    electron ./src
-    electron ./src/app
-
-produce this error block:
-
-    Error opening app
-    The app provided is not a valid Electron app, please read the docs on how to write one:
-    https://github.com/electron/electron/tree/v1.1.1/docs
-
-    Error: Cannot find module '/home/jeff/dev/ang_proj/electronAngularBoilerplate'
+    <!--will give errors in electron... oh well-->
+    <script src="vendor/es6-shim/es6-shim.js"></script>
+    <script src="vendor/reflect-metadata/Reflect.js"></script>
+    <script src="vendor/systemjs/dist/system.src.js"></script>
+    <script src="vendor/zone.js/dist/zone.js"></script>
 
 
-Running `npm run electron` produces this error:
+producing these errors:
 
+    file:///vendor/es6-shim/es6-shim.js Failed to load resource: net::ERR_FILE_NOT_FOUND
+    file:///vendor/reflect-metadata/Reflect.js Failed to load resource: net::ERR_FILE_NOT_FOUND
+    file:///vendor/systemjs/dist/system.src.js Failed to load resource: net::ERR_FILE_NOT_FOUND
+    file:///vendor/zone.js/dist/zone.js Failed to load resource: net::ERR_FILE_NOT_FOUND
 
-    > electron-angular-boilerplate@0.0.0 electron /home/jeff/dev/ang_proj/electronAngularBoilerplate
-    > electron src/app
+Those lines are needed by the webapp. Electron is able to load these files in this block:
 
-    Error opening app
-    The app provided is not a valid Electron app, please read the docs on how to write one:
-    https://github.com/electron/electron/tree/v1.1.3/docs
-
-    Error: Cannot find module '/home/jeff/dev/ang_proj/electronAngularBoilerplate/src/app'
-
-    npm ERR! Linux 4.4.0-22-generic
-    npm ERR! argv "/home/jeff/local/bin/node" "/home/jeff/local/bin/npm" "run" "electron"
-    npm ERR! node v5.10.1
-    npm ERR! npm  v3.8.7
-    npm ERR! code ELIFECYCLE
-    npm ERR! electron-angular-boilerplate@0.0.0 electron: `electron src/app`
-    npm ERR! Exit status 1
-    npm ERR! 
-    npm ERR! Failed at the electron-angular-boilerplate@0.0.0 electron script 'electron src/app'.
-    npm ERR! Make sure you have the latest version of node.js and npm installed.
-    npm ERR! If you do, this is most likely a problem with the electron-angular-boilerplate package,
-    npm ERR! not with npm itself.
-    npm ERR! Tell the author that this fails on your system:
-    npm ERR!     electron src/app
-    npm ERR! You can get information on how to open an issue for this project with:
-    npm ERR!     npm bugs electron-angular-boilerplate
-    npm ERR! Or if that isn't available, you can get their info via:
-    npm ERR!     npm owner ls electron-angular-boilerplate
-    npm ERR! There is likely additional logging output above.
-
-    npm ERR! Please include the following file with any support request:
-    npm ERR!     /home/jeff/dev/ang_proj/electronAngularBoilerplate/npm-debug.log
-
+    <script>
+        // if require is defined, we are on node / electron:
+        if (!(typeof(require) == "undefined")){
+            require('./vendor/es6-shim/es6-shim.js');
+            require("./vendor/reflect-metadata/Reflect.js");
+            require("./vendor/systemjs/dist/system.src.js");
+            require("./vendor/zone.js/dist/zone.js");
+            require("./system-config.js");
+            require("./main.js");
+        } else {
+            System.import('system-config.js').then(function () {
+                System.import('main');
+            }).catch(console.error.bind(console));      
+        }
+    </script>
+    
+At this point I do not see a better solution.

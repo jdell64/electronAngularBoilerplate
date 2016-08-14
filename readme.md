@@ -27,9 +27,9 @@ You can simulate a live reload by building the source while electron is running.
 
     npm run electron
     
-and in another, any time you make a change, run 
+and in another, run 
 
-    ng build
+    ng build --watch
     
 I've had it freeze my app for a few seconds, so it's not as good as a true live-reload.
 
